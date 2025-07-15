@@ -92,5 +92,18 @@ func SetupRoutes(router *gin.Engine) {
 		api.POST("/users", controllers.CreateUser)
 		api.PUT("/users/:id", controllers.UpdateUser)
 		api.DELETE("/users/:id", controllers.DeleteUser)
+
+		//Proses
+		api.GET("/proses", controllers.GetAllProses)
+		api.POST("/proses", controllers.CreateProses)
+		api.PUT("/proses/:id", controllers.UpdateProses)
+		api.DELETE("/proses/:id", controllers.DeleteProses)
+
+		//laporan
+		api.GET("/laporan", controllers.GetAllLaporan)
+		api.POST("/laporan", controllers.CreateLaporan)
+		api.PUT("/laporan/:id", controllers.UpdateLaporan)
+		api.DELETE("/laporan/:id", controllers.DeleteLaporan)
+
 	}
 }
