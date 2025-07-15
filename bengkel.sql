@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 18 Jun 2025 pada 10.51
+-- Waktu pembuatan: 15 Jul 2025 pada 03.08
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -211,6 +211,21 @@ CREATE TABLE `job_batches` (
 -- --------------------------------------------------------
 
 --
+-- Struktur dari tabel `laporan`
+--
+
+CREATE TABLE `laporan` (
+  `id_laporan` int(11) NOT NULL,
+  `id_transaksi` int(11) DEFAULT NULL,
+  `id_customer` int(11) DEFAULT NULL,
+  `total_biaya` bigint(20) DEFAULT NULL,
+  `tanggal_laporan` date DEFAULT curdate(),
+  `catatan` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Struktur dari tabel `mekanik`
 --
 
@@ -253,6 +268,22 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Struktur dari tabel `proses`
+--
+
+CREATE TABLE `proses` (
+  `id_proses` int(11) NOT NULL,
+  `id_transaksi` int(11) DEFAULT NULL,
+  `id_mekanik` int(11) DEFAULT NULL,
+  `status` enum('dalam_antrian','proses','selesai') DEFAULT 'dalam_antrian',
+  `keterangan` text DEFAULT NULL,
+  `waktu_mulai` datetime DEFAULT current_timestamp(),
+  `waktu_selesai` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Struktur dari tabel `sessions`
 --
 
@@ -270,7 +301,9 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('HwKnfO5RPFISREUelFdZpL8bj5HP0TFJ31VuYZWh', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiUEtjZWR1TkJ2YzRkYzFiR0tqR2VwVTFCeGNlVE9oclNmd29DZERTdSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC90cmFuc2Frc2kiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjU6InRva2VuIjtzOjE0MToiZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmxlSEFpT2pFM05UQXpNRGs1TlRjc0luSnZiR1VpT2lKaFpHMXBiaUlzSW5WelpYSmZhV1FpT2pKOS55MUdSMHo0SVp1M3dwQzg2dHBTUmZxMk82WWxpUTJEZHRtZlRLbTJhR3djIjtzOjQ6InVzZXIiO2E6NDp7czo1OiJlbWFpbCI7czoxMjoianlAZ21haWwuY29tIjtzOjI6ImlkIjtpOjI7czo0OiJuYW1lIjtzOjEzOiJKYXlhZGkgZGluYXRhIjtzOjQ6InJvbGUiO3M6NToiYWRtaW4iO319', 1750236341);
+('045HLMYf2aq1jh9RBTBZYpM0xNY3xS6pVokI3ZXL', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiSHNWUW9MZTdSbm5wbG9IcFp2bzdtMG84ZW1hWURPQWgxY2szMHFIRCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1751430004),
+('7rfqypCHIjk6qfo0WQJRSXzAaA7jjmmIojRhDc44', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjY6Il90b2tlbiI7czo0MDoiRXluM2JhSjQ3cGFLQzBKV2pXbjF5TFhWYzl5b3N5SXNyZU04Q0R0ZCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9ob21lIjt9czo1OiJ0b2tlbiI7czoxNDU6ImV5SmhiR2NpT2lKSVV6STFOaUlzSW5SNWNDSTZJa3BYVkNKOS5leUpsZUhBaU9qRTNOVEUxTVRZMU1qQXNJbkp2YkdVaU9pSmpkWE4wYjIxbGNpSXNJblZ6WlhKZmFXUWlPalY5Lkx3THZQZ2NBdlZmeDgzTXd5U1ZsNEJVb251SUpudno0OG1NSTU4TTJjT2ciO3M6NDoidXNlciI7YTo0OntzOjU6ImVtYWlsIjtzOjE1OiJqYW1hbEBnbWFpbC5jb20iO3M6MjoiaWQiO2k6NTtzOjQ6Im5hbWUiO3M6NToiamFtYWwiO3M6NDoicm9sZSI7czo4OiJjdXN0b21lciI7fX0=', 1751430128),
+('wlxGWfs87o8G50PcnzQGYKH0Ud2fW2hgAiO8mC12', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjY6Il90b2tlbiI7czo0MDoiaEFSdEo1Z1JGVmxqOGRDN3V4bHcxdTlaYW1ZUWRFajBFckhzdU9xNyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mjk6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9tZWthbmlrIjt9czo1OiJ0b2tlbiI7czoxNDE6ImV5SmhiR2NpT2lKSVV6STFOaUlzSW5SNWNDSTZJa3BYVkNKOS5leUpsZUhBaU9qRTNOVEl3TXpVNU1EVXNJbkp2YkdVaU9pSmhaRzFwYmlJc0luVnpaWEpmYVdRaU9qSjkuWnJMNzFQcE0zUXVNd2dyRTlxTnI5M0djT2VhbGx0dWl0VnYwR0pyNlYyayI7czo0OiJ1c2VyIjthOjQ6e3M6NToiZW1haWwiO3M6MTI6Imp5QGdtYWlsLmNvbSI7czoyOiJpZCI7aToyO3M6NDoibmFtZSI7czoxMzoiSmF5YWRpIGRpbmF0YSI7czo0OiJyb2xlIjtzOjU6ImFkbWluIjt9fQ==', 1751949524);
 
 -- --------------------------------------------------------
 
@@ -351,10 +384,10 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `role`, `remember_token`, `created_at`, `updated_at`) VALUES
 (2, 'Jayadi dinata', 'jy@gmail.com', NULL, '$2a$10$jxkjQfgqf6Zta.nZ9B3VlubP.lLJW5aS5gwxCmAenL4u4i2WlclK.', 'admin', '', '2025-05-26 03:51:36.078', '2025-05-26 03:51:36.078'),
-(3, 'jaja', 'tes@gmail.com', NULL, 'tes123', 'gudang', '', '0000-00-00 00:00:00.000', '2025-06-17 04:45:01.606'),
 (4, 'Budi Santoso', 'budi@gmail.com', NULL, '$2a$10$UBVEpeRpWqJQbuligSaKpeT4wfx1IkJeNiKxkLsgI3wlQj1r/ShTa', 'mekanik', '', '2025-06-14 05:29:47.101', '2025-06-14 05:29:47.101'),
 (5, 'jamal', 'jamal@gmail.com', NULL, '$2a$10$5wx84alAUlgPnNqPyjoFQeGyaQjFz5cHjj4UfyUnI5yL2yvcruk5a', 'customer', '', '2025-06-16 08:29:26.342', '2025-06-16 08:29:26.342'),
-(7, 'jumint', 'jumin@gmail.com', NULL, '$2a$10$SLUkyL2ShAad2au8ltVkj.PGmA2p5dbPvWF0VYOKXUL51H0LibcIi', 'keuangan', '', '2025-06-17 03:58:47.103', '2025-06-17 03:58:47.103');
+(7, 'jumint', 'jumin@gmail.com', NULL, '$2a$10$SLUkyL2ShAad2au8ltVkj.PGmA2p5dbPvWF0VYOKXUL51H0LibcIi', 'keuangan', '', '2025-06-17 03:58:47.103', '2025-06-17 03:58:47.103'),
+(8, 'Mas Ker', 'ker@gmail.com', NULL, '$2a$10$IQTQB8Gz6QwQKs0TNJW7ce/5evwDgHCe/KuL.gCd60FByLB7vGJBO', 'gudang', '', '2025-06-23 09:34:03.790', '2025-06-23 09:34:03.790');
 
 --
 -- Indexes for dumped tables
@@ -429,6 +462,14 @@ ALTER TABLE `job_batches`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indeks untuk tabel `laporan`
+--
+ALTER TABLE `laporan`
+  ADD PRIMARY KEY (`id_laporan`),
+  ADD KEY `id_transaksi` (`id_transaksi`),
+  ADD KEY `id_customer` (`id_customer`);
+
+--
 -- Indeks untuk tabel `mekanik`
 --
 ALTER TABLE `mekanik`
@@ -439,6 +480,14 @@ ALTER TABLE `mekanik`
 --
 ALTER TABLE `migrations`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indeks untuk tabel `proses`
+--
+ALTER TABLE `proses`
+  ADD PRIMARY KEY (`id_proses`),
+  ADD KEY `id_transaksi` (`id_transaksi`),
+  ADD KEY `id_mekanik` (`id_mekanik`);
 
 --
 -- Indeks untuk tabel `sessions`
@@ -516,6 +565,12 @@ ALTER TABLE `jobs`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT untuk tabel `laporan`
+--
+ALTER TABLE `laporan`
+  MODIFY `id_laporan` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT untuk tabel `mekanik`
 --
 ALTER TABLE `mekanik`
@@ -526,6 +581,12 @@ ALTER TABLE `mekanik`
 --
 ALTER TABLE `migrations`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT untuk tabel `proses`
+--
+ALTER TABLE `proses`
+  MODIFY `id_proses` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT untuk tabel `sparepart`
@@ -549,7 +610,7 @@ ALTER TABLE `transaksi`
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
@@ -570,6 +631,20 @@ ALTER TABLE `detail_transaksi`
   ADD CONSTRAINT `detail_transaksi_ibfk_3` FOREIGN KEY (`id_sparepart`) REFERENCES `sparepart` (`id_sparepart`),
   ADD CONSTRAINT `detail_transaksi_ibfk_4` FOREIGN KEY (`id_service`) REFERENCES `jenis_service` (`id_service`),
   ADD CONSTRAINT `detail_transaksi_ibfk_5` FOREIGN KEY (`id_jasa`) REFERENCES `jenis_jasa` (`id_jasa`);
+
+--
+-- Ketidakleluasaan untuk tabel `laporan`
+--
+ALTER TABLE `laporan`
+  ADD CONSTRAINT `laporan_ibfk_1` FOREIGN KEY (`id_transaksi`) REFERENCES `transaksi` (`id_transaksi`),
+  ADD CONSTRAINT `laporan_ibfk_2` FOREIGN KEY (`id_customer`) REFERENCES `customer` (`id_customer`);
+
+--
+-- Ketidakleluasaan untuk tabel `proses`
+--
+ALTER TABLE `proses`
+  ADD CONSTRAINT `proses_ibfk_1` FOREIGN KEY (`id_transaksi`) REFERENCES `transaksi` (`id_transaksi`),
+  ADD CONSTRAINT `proses_ibfk_2` FOREIGN KEY (`id_mekanik`) REFERENCES `mekanik` (`id_mekanik`);
 
 --
 -- Ketidakleluasaan untuk tabel `spk`
