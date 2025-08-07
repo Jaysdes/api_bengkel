@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 15 Jul 2025 pada 03.08
+-- Waktu pembuatan: 01 Agu 2025 pada 08.41
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -151,8 +151,7 @@ CREATE TABLE `jenis_kendaraan` (
 
 INSERT INTO `jenis_kendaraan` (`id_jenis`, `jenis_kendaraan`) VALUES
 (1, 'Motor'),
-(2, 'Mobil'),
-(3, 'Motor');
+(2, 'Mobil');
 
 -- --------------------------------------------------------
 
@@ -301,9 +300,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('045HLMYf2aq1jh9RBTBZYpM0xNY3xS6pVokI3ZXL', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiSHNWUW9MZTdSbm5wbG9IcFp2bzdtMG84ZW1hWURPQWgxY2szMHFIRCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1751430004),
-('7rfqypCHIjk6qfo0WQJRSXzAaA7jjmmIojRhDc44', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjY6Il90b2tlbiI7czo0MDoiRXluM2JhSjQ3cGFLQzBKV2pXbjF5TFhWYzl5b3N5SXNyZU04Q0R0ZCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9ob21lIjt9czo1OiJ0b2tlbiI7czoxNDU6ImV5SmhiR2NpT2lKSVV6STFOaUlzSW5SNWNDSTZJa3BYVkNKOS5leUpsZUhBaU9qRTNOVEUxTVRZMU1qQXNJbkp2YkdVaU9pSmpkWE4wYjIxbGNpSXNJblZ6WlhKZmFXUWlPalY5Lkx3THZQZ2NBdlZmeDgzTXd5U1ZsNEJVb251SUpudno0OG1NSTU4TTJjT2ciO3M6NDoidXNlciI7YTo0OntzOjU6ImVtYWlsIjtzOjE1OiJqYW1hbEBnbWFpbC5jb20iO3M6MjoiaWQiO2k6NTtzOjQ6Im5hbWUiO3M6NToiamFtYWwiO3M6NDoicm9sZSI7czo4OiJjdXN0b21lciI7fX0=', 1751430128),
-('wlxGWfs87o8G50PcnzQGYKH0Ud2fW2hgAiO8mC12', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjY6Il90b2tlbiI7czo0MDoiaEFSdEo1Z1JGVmxqOGRDN3V4bHcxdTlaYW1ZUWRFajBFckhzdU9xNyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mjk6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9tZWthbmlrIjt9czo1OiJ0b2tlbiI7czoxNDE6ImV5SmhiR2NpT2lKSVV6STFOaUlzSW5SNWNDSTZJa3BYVkNKOS5leUpsZUhBaU9qRTNOVEl3TXpVNU1EVXNJbkp2YkdVaU9pSmhaRzFwYmlJc0luVnpaWEpmYVdRaU9qSjkuWnJMNzFQcE0zUXVNd2dyRTlxTnI5M0djT2VhbGx0dWl0VnYwR0pyNlYyayI7czo0OiJ1c2VyIjthOjQ6e3M6NToiZW1haWwiO3M6MTI6Imp5QGdtYWlsLmNvbSI7czoyOiJpZCI7aToyO3M6NDoibmFtZSI7czoxMzoiSmF5YWRpIGRpbmF0YSI7czo0OiJyb2xlIjtzOjU6ImFkbWluIjt9fQ==', 1751949524);
+('u6FD3abb3tfF88gJ3gUk8IFHYCgRaGSUd1xwRkyA', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoidHQxZnRIWXlFdlpYVkZsMTg2UzhDbGlaRFhhdnBmUFlSMTU2TG5zaSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC90cmFuc2Frc2kiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjU6InRva2VuIjtzOjE0MToiZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmxlSEFpT2pFM05UUXdNVGcxTVRNc0luSnZiR1VpT2lKaFpHMXBiaUlzSW5WelpYSmZhV1FpT2pKOS5GUTJGMUNRREd5d3p0bFJSZU9KU0tYYVJLRnludElQMURRYjUtaWVOX3FrIjtzOjQ6InVzZXIiO2E6NDp7czo1OiJlbWFpbCI7czoxMjoianlAZ21haWwuY29tIjtzOjI6ImlkIjtpOjI7czo0OiJuYW1lIjtzOjEzOiJKYXlhZGkgZGluYXRhIjtzOjQ6InJvbGUiO3M6NToiYWRtaW4iO319', 1753952892);
 
 -- --------------------------------------------------------
 
@@ -343,6 +340,14 @@ CREATE TABLE `spk` (
   `keluhan` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data untuk tabel `spk`
+--
+
+INSERT INTO `spk` (`id_spk`, `tanggal_spk`, `id_service`, `id_jasa`, `id_customer`, `id_jenis`, `no_kendaraan`, `keluhan`) VALUES
+(1, '2025-07-31', 2, 1, 4, 1, 'B1234XYZ', 'Suara BIsing'),
+(2, '2025-08-01', 1, 3, 6, 1, 'B1231BB', 'Telat ganti');
+
 -- --------------------------------------------------------
 
 --
@@ -357,7 +362,10 @@ CREATE TABLE `transaksi` (
   `no_kendaraan` varchar(50) DEFAULT NULL,
   `pemilik` varchar(100) DEFAULT NULL,
   `telepon` varchar(20) DEFAULT NULL,
-  `id_mekanik` int(11) DEFAULT NULL
+  `id_mekanik` int(11) DEFAULT NULL,
+  `harga_jasa` int(11) DEFAULT 0,
+  `harga_sparepart` int(11) DEFAULT 0,
+  `total` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -598,7 +606,7 @@ ALTER TABLE `sparepart`
 -- AUTO_INCREMENT untuk tabel `spk`
 --
 ALTER TABLE `spk`
-  MODIFY `id_spk` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_spk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT untuk tabel `transaksi`

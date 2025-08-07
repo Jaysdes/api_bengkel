@@ -4,7 +4,7 @@ import "time"
 
 type SPK struct {
 	IDSpk       int       `gorm:"primaryKey;column:id_spk" json:"id_spk"`
-	TanggalSPK  time.Time `gorm:"column:tanggal_spk" json:"tanggal_spk"`
+	TanggalSPK  time.Time `json:"tanggal_spk" time_format:"2006-01-02" time_utc:"true"`
 	IDService   int       `gorm:"column:id_service" json:"id_service"`
 	IDJasa      int       `gorm:"column:id_jasa" json:"id_jasa"`
 	IDCustomer  int       `gorm:"column:id_customer" json:"id_customer"`

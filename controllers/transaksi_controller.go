@@ -37,7 +37,8 @@ func CreateTransaksi(c *gin.Context) {
 		return
 	}
 
-	// Optional: bisa cek foreign key di sini, tapi biar DB handle juga aman
+	// Hitung total dari harga jasa + harga sparepart
+	input.Total = input.HargaJasa + input.HargaSparepart
 
 	if err := config.DB.Create(&input).Error; err != nil {
 		utils.ResponseError(c, http.StatusInternalServerError, "Failed to create transaksi")
@@ -65,9 +66,11 @@ func UpdateTransaksi(c *gin.Context) {
 	transaksi.IDCustomer = input.IDCustomer
 	transaksi.IDJenis = input.IDJenis
 	transaksi.NoKendaraan = input.NoKendaraan
-	transaksi.Pemilik = input.Pemilik
 	transaksi.Telepon = input.Telepon
 	transaksi.IDMekanik = input.IDMekanik
+	transaksi.HargaJasa = input.HargaJasa
+	transaksi.HargaSparepart = input.HargaSparepart
+	transaksi.Total = input.HargaJasa + input.HargaSparepart
 
 	if err := config.DB.Save(&transaksi).Error; err != nil {
 		utils.ResponseError(c, http.StatusInternalServerError, "Failed to update transaksi")

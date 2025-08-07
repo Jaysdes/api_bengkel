@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"api_bengkel/config"
 	"api_bengkel/models"
@@ -10,6 +11,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
+
+// ====================== JENIS KENDARAAN ==========================
 
 func GetJenisKendaraans(c *gin.Context) {
 	var jenis []models.JenisKendaraan
@@ -84,8 +87,8 @@ func DeleteJenisKendaraan(c *gin.Context) {
 	utils.ResponseSuccess(c, http.StatusOK, "Jenis kendaraan deleted", nil)
 }
 
+// ========================= CUSTOMER ============================
 
-//CRUD Customer 
 func GetCustomers(c *gin.Context) {
 	var customers []models.Customer
 	if err := config.DB.Find(&customers).Error; err != nil {
@@ -97,7 +100,6 @@ func GetCustomers(c *gin.Context) {
 
 func GetCustomerByID(c *gin.Context) {
 	id := c.Param("id")
-	// validasi ID numerik
 	idInt, err := strconv.Atoi(id)
 	if err != nil {
 		utils.ResponseError(c, http.StatusBadRequest, "Invalid customer ID")
@@ -111,31 +113,30 @@ func GetCustomerByID(c *gin.Context) {
 	}
 	utils.ResponseSuccess(c, http.StatusOK, "Success", customer)
 }
-
 func CreateCustomer(c *gin.Context) {
 	var input models.Customer
 	if err := c.ShouldBindJSON(&input); err != nil {
 		utils.ResponseError(c, http.StatusBadRequest, err.Error())
 		return
 	}
+
+	if input.TanggalMasuk.IsZero() {
+		input.TanggalMasuk = time.Now()
+	}
+
 	if err := config.DB.Create(&input).Error; err != nil {
 		utils.ResponseError(c, http.StatusInternalServerError, "Failed to create customer")
 		return
 	}
-	utils.ResponseSuccess(c, http.StatusCreated, "Customer created", input)
+	utils.ResponseSuccess(c, http.StatusCreated, "Data Customer Baru Berhasil di Buat", input)
 }
-
 func UpdateCustomer(c *gin.Context) {
+
 	id := c.Param("id")
-	idInt, err := strconv.Atoi(id)
-	if err != nil {
-		utils.ResponseError(c, http.StatusBadRequest, "Invalid customer ID")
-		return
-	}
 
 	var customer models.Customer
-	if err := config.DB.Where("id_customer = ?", idInt).First(&customer).Error; err != nil {
-		utils.ResponseError(c, http.StatusNotFound, "Customer not found")
+	if err := config.DB.Where("id_customer = ?", id).First(&customer).Error; err != nil {
+		utils.ResponseError(c, http.StatusNotFound, "Data Customer not found")
 		return
 	}
 
@@ -145,19 +146,21 @@ func UpdateCustomer(c *gin.Context) {
 		return
 	}
 
-	// Update fields secara eksplisit
+	// Update data
 	customer.NamaCustomer = input.NamaCustomer
 	customer.IDJenis = input.IDJenis
 	customer.NoKendaraan = input.NoKendaraan
 	customer.Alamat = input.Alamat
 	customer.Telepon = input.Telepon
+	customer.TanggalMasuk = input.TanggalMasuk
 
+	// Simpan ke database
 	if err := config.DB.Save(&customer).Error; err != nil {
 		utils.ResponseError(c, http.StatusInternalServerError, "Failed to update customer")
 		return
 	}
 
-	utils.ResponseSuccess(c, http.StatusOK, "Customer updated", customer)
+	utils.ResponseSuccess(c, http.StatusOK, "Data Customer Berhasil Di Update", customer)
 }
 
 func DeleteCustomer(c *gin.Context) {

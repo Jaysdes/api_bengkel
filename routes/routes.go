@@ -48,7 +48,7 @@ func SetupRoutes(router *gin.Engine) {
 		api.POST("/transaksi", controllers.CreateTransaksi)
 		api.PUT("/transaksi/:id", controllers.UpdateTransaksi)
 		api.DELETE("/transaksi/:id", controllers.DeleteTransaksi)
-
+		
 		//Jenis jasa
 		api.GET("/jenis_jasa", controllers.GetJenisJasas)
 		api.GET("/jenis_jasa/:id", controllers.GetJenisJasaByID)

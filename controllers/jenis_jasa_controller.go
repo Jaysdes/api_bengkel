@@ -14,7 +14,7 @@ import (
 func GetJenisJasas(c *gin.Context) {
 	var jenisJasas []models.JenisJasa
 	if err := config.DB.Find(&jenisJasas).Error; err != nil {
-		utils.ResponseError(c, http.StatusInternalServerError, "Failed to fetch jenis jasa")
+		utils.ResponseError(c, http.StatusInternalServerError, "Failed to fetch jenis jasa: "+err.Error())
 		return
 	}
 	utils.ResponseSuccess(c, http.StatusOK, "Success", jenisJasas)
@@ -22,9 +22,15 @@ func GetJenisJasas(c *gin.Context) {
 
 func GetJenisJasaByID(c *gin.Context) {
 	id := c.Param("id")
+	idInt, err := strconv.Atoi(id)
+	if err != nil {
+		utils.ResponseError(c, http.StatusBadRequest, "Invalid jenis jasa ID: "+err.Error())
+		return
+	}
+
 	var jenisJasa models.JenisJasa
-	if err := config.DB.Where("id_jasa = ?", id).First(&jenisJasa).Error; err != nil {
-		utils.ResponseError(c, http.StatusNotFound, "Jenis jasa not found")
+	if err := config.DB.First(&jenisJasa, idInt).Error; err != nil {
+		utils.ResponseError(c, http.StatusNotFound, "Jenis jasa not found: "+err.Error())
 		return
 	}
 	utils.ResponseSuccess(c, http.StatusOK, "Success", jenisJasa)
@@ -33,12 +39,12 @@ func GetJenisJasaByID(c *gin.Context) {
 func CreateJenisJasa(c *gin.Context) {
 	var input models.JenisJasa
 	if err := c.ShouldBindJSON(&input); err != nil {
-		utils.ResponseError(c, http.StatusBadRequest, err.Error())
+		utils.ResponseError(c, http.StatusBadRequest, "Invalid input: "+err.Error())
 		return
 	}
 
 	if err := config.DB.Create(&input).Error; err != nil {
-		utils.ResponseError(c, http.StatusInternalServerError, "Failed to create jenis jasa")
+		utils.ResponseError(c, http.StatusInternalServerError, "Failed to create jenis jasa: "+err.Error())
 		return
 	}
 	utils.ResponseSuccess(c, http.StatusCreated, "Jenis jasa created", input)
@@ -46,15 +52,21 @@ func CreateJenisJasa(c *gin.Context) {
 
 func UpdateJenisJasa(c *gin.Context) {
 	id := c.Param("id")
+	idInt, err := strconv.Atoi(id)
+	if err != nil {
+		utils.ResponseError(c, http.StatusBadRequest, "Invalid jenis jasa ID: "+err.Error())
+		return
+	}
+
 	var jenisJasa models.JenisJasa
-	if err := config.DB.Where("id_jasa = ?", id).First(&jenisJasa).Error; err != nil {
-		utils.ResponseError(c, http.StatusNotFound, "Jenis jasa not found")
+	if err := config.DB.First(&jenisJasa, idInt).Error; err != nil {
+		utils.ResponseError(c, http.StatusNotFound, "Jenis jasa not found: "+err.Error())
 		return
 	}
 
 	var input models.JenisJasa
 	if err := c.ShouldBindJSON(&input); err != nil {
-		utils.ResponseError(c, http.StatusBadRequest, err.Error())
+		utils.ResponseError(c, http.StatusBadRequest, "Invalid input: "+err.Error())
 		return
 	}
 
@@ -62,7 +74,7 @@ func UpdateJenisJasa(c *gin.Context) {
 	jenisJasa.HargaJasa = input.HargaJasa
 
 	if err := config.DB.Save(&jenisJasa).Error; err != nil {
-		utils.ResponseError(c, http.StatusInternalServerError, "Failed to update jenis jasa")
+		utils.ResponseError(c, http.StatusInternalServerError, "Failed to update jenis jasa: "+err.Error())
 		return
 	}
 
@@ -73,12 +85,12 @@ func DeleteJenisJasa(c *gin.Context) {
 	id := c.Param("id")
 	idInt, err := strconv.Atoi(id)
 	if err != nil {
-		utils.ResponseError(c, http.StatusBadRequest, "Invalid jenis jasa ID")
+		utils.ResponseError(c, http.StatusBadRequest, "Invalid jenis jasa ID: "+err.Error())
 		return
 	}
 
 	if err := config.DB.Delete(&models.JenisJasa{}, idInt).Error; err != nil {
-		utils.ResponseError(c, http.StatusInternalServerError, "Failed to delete jenis jasa")
+		utils.ResponseError(c, http.StatusInternalServerError, "Failed to delete jenis jasa: "+err.Error())
 		return
 	}
 
