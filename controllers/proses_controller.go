@@ -5,42 +5,34 @@ import (
 	"api_bengkel/models"
 	"api_bengkel/utils"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
-// GET /proses
 func GetAllProses(c *gin.Context) {
-	var data []models.Proses
-	if err := config.DB.Find(&data).Error; err != nil {
-		utils.ResponseError(c, http.StatusInternalServerError, err.Error())
+	var proses []models.Proses
+	if err := config.DB.Find(&proses).Error; err != nil {
+		utils.ResponseError(c, http.StatusInternalServerError, "Failed to fetch proses")
 		return
 	}
-	utils.ResponseSuccess(c, http.StatusOK, "List Proses", data)
+	utils.ResponseSuccess(c, http.StatusOK, "Success", proses)
 }
 
-// POST /proses
-func CreateProses(c *gin.Context) {
-	var input models.Proses
-	if err := c.ShouldBindJSON(&input); err != nil {
-		utils.ResponseError(c, http.StatusBadRequest, err.Error())
+func GetProsesByID(c *gin.Context) {
+	id := c.Param("id")
+	var proses models.Proses
+	if err := config.DB.Where("id_proses = ?", id).First(&proses).Error; err != nil {
+		utils.ResponseError(c, http.StatusNotFound, "Proses not found")
 		return
 	}
-
-	if err := config.DB.Create(&input).Error; err != nil {
-		utils.ResponseError(c, http.StatusInternalServerError, err.Error())
-		return
-	}
-	utils.ResponseSuccess(c, http.StatusCreated, "Data proses berhasil ditambahkan", input)
+	utils.ResponseSuccess(c, http.StatusOK, "Success", proses)
 }
 
-// PUT /proses/:id
 func UpdateProses(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	var data models.Proses
-	if err := config.DB.First(&data, id).Error; err != nil {
-		utils.ResponseError(c, http.StatusNotFound, "Proses tidak ditemukan")
+	id := c.Param("id")
+	var proses models.Proses
+	if err := config.DB.Where("id_proses = ?", id).First(&proses).Error; err != nil {
+		utils.ResponseError(c, http.StatusNotFound, "Proses not found")
 		return
 	}
 
@@ -50,16 +42,24 @@ func UpdateProses(c *gin.Context) {
 		return
 	}
 
-	config.DB.Model(&data).Updates(input)
-	utils.ResponseSuccess(c, http.StatusOK, "Data proses berhasil diperbarui", data)
-}
+	proses.Status = input.Status
+	proses.Keterangan = input.Keterangan
+	proses.WaktuMulai = input.WaktuMulai
+	proses.WaktuSelesai = input.WaktuSelesai
 
-// DELETE /proses/:id
-func DeleteProses(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	if err := config.DB.Delete(&models.Proses{}, id).Error; err != nil {
-		utils.ResponseError(c, http.StatusInternalServerError, err.Error())
+	if err := config.DB.Save(&proses).Error; err != nil {
+		utils.ResponseError(c, http.StatusInternalServerError, "Failed to update proses")
 		return
 	}
-	utils.ResponseSuccess(c, http.StatusOK, "Data proses berhasil dihapus", nil)
+
+	utils.ResponseSuccess(c, http.StatusOK, "Proses updated", proses)
+}
+
+func DeleteProses(c *gin.Context) {
+	id := c.Param("id")
+	if err := config.DB.Delete(&models.Proses{}, id).Error; err != nil {
+		utils.ResponseError(c, http.StatusInternalServerError, "Failed to delete proses")
+		return
+	}
+	utils.ResponseSuccess(c, http.StatusOK, "Proses deleted", nil)
 }

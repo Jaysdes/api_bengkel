@@ -1,16 +1,17 @@
 package models
 
 type Transaksi struct {
-	IDTransaksi    int    `gorm:"primaryKey;column:id_transaksi" json:"id_transaksi"`
-	IDSPK          int    `gorm:"column:id_spk" json:"id_spk"`
-	IDCustomer     int    `gorm:"column:id_customer" json:"id_customer"`
-	IDJenis        int    `gorm:"column:id_jenis" json:"id_jenis"`
-	NoKendaraan    string `gorm:"column:no_kendaraan" json:"no_kendaraan"`
-	Telepon        string `gorm:"column:telepon" json:"telepon"`
-	IDMekanik      int    `gorm:"column:id_mekanik" json:"id_mekanik"`
-	HargaJasa      int    `gorm:"column:harga_jasa" json:"harga_jasa"`
-	HargaSparepart int    `gorm:"column:harga_sparepart" json:"harga_sparepart"`
-	Total          int    `gorm:"column:total" json:"total"`
+	IDTransaksi      int    `gorm:"primaryKey;column:id_transaksi" json:"id_transaksi"`
+	IDSPK            int    `gorm:"column:id_spk" json:"id_spk"`
+	IDCustomer       int    `gorm:"column:id_customer" json:"id_customer"`
+	IDJenis          int    `gorm:"column:id_jenis" json:"id_jenis"`
+	NoKendaraan      string `gorm:"column:no_kendaraan" json:"no_kendaraan"`
+	Telepon          string `gorm:"column:telepon" json:"telepon"`
+	IDMekanik        int    `gorm:"column:id_mekanik" json:"id_mekanik"`
+	HargaJasa        int    `gorm:"column:harga_jasa" json:"harga_jasa"`
+	HargaSparepart   int    `gorm:"column:harga_sparepart" json:"harga_sparepart"`
+	Total            int    `gorm:"column:total" json:"total"`
+	StatusPembayaran string `json:"status_pembayaran"`
 }
 
 // Nama tabel sesuai database

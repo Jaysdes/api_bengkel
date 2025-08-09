@@ -45,7 +45,19 @@ func CreateTransaksi(c *gin.Context) {
 		return
 	}
 
-	utils.ResponseSuccess(c, http.StatusCreated, "Transaksi created", input)
+	// Tambahkan proses otomatis
+	proses := models.Proses{
+		IDTransaksi: input.IDTransaksi,
+		IDMekanik:   input.IDMekanik,
+		Status:      "belum diproses",
+		Keterangan:  "Proses baru dimulai",
+	}
+
+	if err := config.DB.Create(&proses).Error; err != nil {
+		utils.ResponseError(c, http.StatusInternalServerError, "Failed to create proses")
+		return
+	}
+
 }
 
 func UpdateTransaksi(c *gin.Context) {
@@ -94,4 +106,43 @@ func DeleteTransaksi(c *gin.Context) {
 	}
 
 	utils.ResponseSuccess(c, http.StatusOK, "Transaksi deleted", nil)
+}
+
+func BayarTransaksi(c *gin.Context) {
+	id := c.Param("id")
+	var transaksi models.Transaksi
+
+	if err := config.DB.Where("id_transaksi = ?", id).First(&transaksi).Error; err != nil {
+		utils.ResponseError(c, http.StatusNotFound, "Transaksi tidak ditemukan")
+		return
+	}
+
+	if transaksi.StatusPembayaran == "lunas" {
+		utils.ResponseError(c, http.StatusBadRequest, "Pembayaran sudah lunas")
+		return
+	}
+
+	transaksi.StatusPembayaran = "lunas"
+	if err := config.DB.Save(&transaksi).Error; err != nil {
+		utils.ResponseError(c, http.StatusInternalServerError, "Gagal memvalidasi pembayaran")
+		return
+	}
+
+	utils.ResponseSuccess(c, http.StatusOK, "Pembayaran berhasil divalidasi", transaksi)
+}
+
+func CetakNota(c *gin.Context) {
+	id := c.Param("id")
+	var transaksi models.Transaksi
+
+	if err := config.DB.Preload("Customer").Preload("Mekanik").
+		Where("id_transaksi = ?", id).First(&transaksi).Error; err != nil {
+		utils.ResponseError(c, http.StatusNotFound, "Transaksi tidak ditemukan")
+		return
+	}
+
+	// Kirim ke view Laravel (atau HTML render di Go)
+	c.HTML(http.StatusOK, "nota.html", gin.H{
+		"Transaksi": transaksi,
+	})
 }

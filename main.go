@@ -27,6 +27,6 @@ func main() {
 	// Register semua route
 	routes.SetupRoutes(r)
 
-	// Jalankan server di port 8000
-	r.Run(":8000")
+	// Jalankan server di port 8001
+	r.Run(":8001")
 }
