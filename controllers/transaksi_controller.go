@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"api_bengkel/config"
 	"api_bengkel/models"
@@ -29,7 +30,6 @@ func GetTransaksiByID(c *gin.Context) {
 	}
 	utils.ResponseSuccess(c, http.StatusOK, "Success", transaksi)
 }
-
 func CreateTransaksi(c *gin.Context) {
 	var input models.Transaksi
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -40,24 +40,44 @@ func CreateTransaksi(c *gin.Context) {
 	// Hitung total dari harga jasa + harga sparepart
 	input.Total = input.HargaJasa + input.HargaSparepart
 
+	// Simpan transaksi
 	if err := config.DB.Create(&input).Error; err != nil {
 		utils.ResponseError(c, http.StatusInternalServerError, "Failed to create transaksi")
 		return
 	}
 
-	// Tambahkan proses otomatis
+	// Tambahkan otomatis ke tabel proses
 	proses := models.Proses{
 		IDTransaksi: input.IDTransaksi,
 		IDMekanik:   input.IDMekanik,
-		Status:      "belum diproses",
-		Keterangan:  "Proses baru dimulai",
+		Status:      "transaksi di proses",
+		Keterangan:  "menunggu konfirmasi",
+		WaktuMulai:  time.Now(),
 	}
-
 	if err := config.DB.Create(&proses).Error; err != nil {
 		utils.ResponseError(c, http.StatusInternalServerError, "Failed to create proses")
 		return
 	}
 
+	// Tambahkan otomatis ke tabel detail_transaksi tanpa bayar & kembalian
+	detail := models.DetailTransaksi{
+		IDTransaksi: input.IDTransaksi,
+		NoSPK:       input.IDSPK,
+		IDCustomer:  input.IDCustomer,
+		NoKendaraan: input.NoKendaraan,
+		IDSparepart: 0,
+		IDService:   0,
+		IDJasa:      0,
+		Total:       int64(input.Total),
+		Bayar:       0,
+		Kembalian:   0,
+	}
+	if err := config.DB.Create(&detail).Error; err != nil {
+		utils.ResponseError(c, http.StatusInternalServerError, "Failed to create detail transaksi")
+		return
+	}
+
+	utils.ResponseSuccess(c, http.StatusOK, "Transaksi & Proses & Detail berhasil dibuat", input)
 }
 
 func UpdateTransaksi(c *gin.Context) {
@@ -107,7 +127,6 @@ func DeleteTransaksi(c *gin.Context) {
 
 	utils.ResponseSuccess(c, http.StatusOK, "Transaksi deleted", nil)
 }
-
 func BayarTransaksi(c *gin.Context) {
 	id := c.Param("id")
 	var transaksi models.Transaksi
@@ -122,11 +141,18 @@ func BayarTransaksi(c *gin.Context) {
 		return
 	}
 
+	// Update status transaksi
 	transaksi.StatusPembayaran = "lunas"
 	if err := config.DB.Save(&transaksi).Error; err != nil {
 		utils.ResponseError(c, http.StatusInternalServerError, "Gagal memvalidasi pembayaran")
 		return
 	}
+
+	// Update waktu_selesai pada proses
+	config.DB.Model(&models.Proses{}).
+		Where("id_transaksi = ?", transaksi.IDTransaksi).
+		Update("waktu_selesai", time.Now()).
+		Update("status", "transaksi selesai")
 
 	utils.ResponseSuccess(c, http.StatusOK, "Pembayaran berhasil divalidasi", transaksi)
 }

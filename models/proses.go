@@ -1,13 +1,15 @@
 package models
 
+import "time"
+
 type Proses struct {
-	IDProses     int    `gorm:"primaryKey;column:id_proses" json:"id_proses"`
-	IDTransaksi  int    `gorm:"column:id_transaksi" json:"id_transaksi"`
-	IDMekanik    int    `gorm:"column:id_mekanik" json:"id_mekanik"`
-	Status       string `gorm:"column:status" json:"status"`
-	Keterangan   string `gorm:"column:keterangan" json:"keterangan"`
-	WaktuMulai   string `gorm:"column:waktu_mulai" json:"waktu_mulai"`
-	WaktuSelesai string `gorm:"column:waktu_selesai" json:"waktu_selesai"`
+	IDProses     int        `json:"id_proses" gorm:"primaryKey;autoIncrement"`
+	IDTransaksi  int        `json:"id_transaksi"`
+	IDMekanik    int        `json:"id_mekanik"`
+	Status       string     `json:"status" gorm:"type:varchar(50)"`
+	Keterangan   string     `json:"keterangan" gorm:"type:varchar(255)"`
+	WaktuMulai   time.Time  `json:"waktu_mulai" gorm:"type:datetime"`
+	WaktuSelesai *time.Time `json:"waktu_selesai" gorm:"type:datetime"`
 }
 
 // Nama tabel sesuai database
