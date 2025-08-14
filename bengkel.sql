@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 01 Agu 2025 pada 08.41
+-- Waktu pembuatan: 14 Agu 2025 pada 02.47
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -57,16 +57,20 @@ CREATE TABLE `customer` (
   `id_jenis` int(11) DEFAULT NULL,
   `no_kendaraan` varchar(50) DEFAULT NULL,
   `alamat` text DEFAULT NULL,
-  `telepon` varchar(20) DEFAULT NULL
+  `telepon` varchar(20) DEFAULT NULL,
+  `tanggal_masuk` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data untuk tabel `customer`
 --
 
-INSERT INTO `customer` (`id_customer`, `nama_customer`, `id_jenis`, `no_kendaraan`, `alamat`, `telepon`) VALUES
-(4, 'Budi Santoso', 2, 'B1234XYZ', 'Jl. Merdeka No. 19', '08123456789'),
-(6, 'Bamabang', 1, 'B1231BB', 'Jl.Makmur N0.12', '08123311100');
+INSERT INTO `customer` (`id_customer`, `nama_customer`, `id_jenis`, `no_kendaraan`, `alamat`, `telepon`, `tanggal_masuk`) VALUES
+(4, 'Budi Santoso', 1, 'B1234XYZ', 'Jl. Merdeka No. 19', '082123231', '2025-08-09'),
+(6, 'Bamabang', 1, 'B1231BB', 'Jl.Makmur N0.12', '08123311100', NULL),
+(7, 'Sam Padn', 2, 'B2123X', 'Jln.Samarinda 21', '0832312313', '2025-08-07'),
+(8, 'Massa', 2, 'A092321W', 'Jln.Samarinda 21', '0832312313', '2025-08-07'),
+(9, 'Massa', 2, 'B2123X', 'Jln. Makmur 22', '0832312313', '2025-08-12');
 
 -- --------------------------------------------------------
 
@@ -76,14 +80,16 @@ INSERT INTO `customer` (`id_customer`, `nama_customer`, `id_jenis`, `no_kendaraa
 
 CREATE TABLE `detail_transaksi` (
   `id_detail` int(11) NOT NULL,
+  `id_transaksi` int(11) DEFAULT NULL,
   `no_spk` int(11) DEFAULT NULL,
   `id_customer` int(11) DEFAULT NULL,
   `no_kendaraan` varchar(50) DEFAULT NULL,
   `id_sparepart` int(11) DEFAULT NULL,
   `id_service` int(11) DEFAULT NULL,
   `id_jasa` int(11) DEFAULT NULL,
-  `qty` int(11) DEFAULT NULL,
-  `total` bigint(20) DEFAULT NULL
+  `total` bigint(20) DEFAULT NULL,
+  `bayar` bigint(20) DEFAULT NULL,
+  `kembalian` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -274,9 +280,9 @@ CREATE TABLE `proses` (
   `id_proses` int(11) NOT NULL,
   `id_transaksi` int(11) DEFAULT NULL,
   `id_mekanik` int(11) DEFAULT NULL,
-  `status` enum('dalam_antrian','proses','selesai') DEFAULT 'dalam_antrian',
-  `keterangan` text DEFAULT NULL,
-  `waktu_mulai` datetime DEFAULT current_timestamp(),
+  `status` varchar(50) NOT NULL DEFAULT 'transaksi di proses',
+  `keterangan` varchar(255) DEFAULT 'menunggu konfirmasi',
+  `waktu_mulai` datetime NOT NULL,
   `waktu_selesai` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -300,7 +306,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('u6FD3abb3tfF88gJ3gUk8IFHYCgRaGSUd1xwRkyA', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoidHQxZnRIWXlFdlpYVkZsMTg2UzhDbGlaRFhhdnBmUFlSMTU2TG5zaSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC90cmFuc2Frc2kiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjU6InRva2VuIjtzOjE0MToiZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmxlSEFpT2pFM05UUXdNVGcxTVRNc0luSnZiR1VpT2lKaFpHMXBiaUlzSW5WelpYSmZhV1FpT2pKOS5GUTJGMUNRREd5d3p0bFJSZU9KU0tYYVJLRnludElQMURRYjUtaWVOX3FrIjtzOjQ6InVzZXIiO2E6NDp7czo1OiJlbWFpbCI7czoxMjoianlAZ21haWwuY29tIjtzOjI6ImlkIjtpOjI7czo0OiJuYW1lIjtzOjEzOiJKYXlhZGkgZGluYXRhIjtzOjQ6InJvbGUiO3M6NToiYWRtaW4iO319', 1753952892);
+('IPihCknric6fSFuf9xreaGe3LXDqzNMbVEdtO6vG', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjY6Il90b2tlbiI7czo0MDoicFo5OU5HSG5JbkdUWEV3ZTZkNU0zcEtaZmw1WmtMWlc3bTlTUTk1dSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9kYXNoYm9hcmQiO31zOjU6InRva2VuIjtzOjE0MToiZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmxlSEFpT2pFM05UVXhOelEyTXpjc0luSnZiR1VpT2lKaFpHMXBiaUlzSW5WelpYSmZhV1FpT2pKOS43T2wwUFpfaE01ZkFpTXNFRFhPb2wyakJGdXl1Vll2VGw4bWhaSFlveTNZIjtzOjQ6InVzZXIiO2E6NDp7czo1OiJlbWFpbCI7czoxMjoianlAZ21haWwuY29tIjtzOjI6ImlkIjtpOjI7czo0OiJuYW1lIjtzOjEzOiJKYXlhZGkgZGluYXRhIjtzOjQ6InJvbGUiO3M6NToiYWRtaW4iO319', 1755101344);
 
 -- --------------------------------------------------------
 
@@ -346,7 +352,10 @@ CREATE TABLE `spk` (
 
 INSERT INTO `spk` (`id_spk`, `tanggal_spk`, `id_service`, `id_jasa`, `id_customer`, `id_jenis`, `no_kendaraan`, `keluhan`) VALUES
 (1, '2025-07-31', 2, 1, 4, 1, 'B1234XYZ', 'Suara BIsing'),
-(2, '2025-08-01', 1, 3, 6, 1, 'B1231BB', 'Telat ganti');
+(2, '2025-08-02', 1, 3, 6, 1, 'B1231BB', 'Telat ganti'),
+(5, '2025-08-07', 1, 2, 6, 1, 'B1231BB', 'DAsa'),
+(6, '2025-08-10', 1, 13, 8, 2, 'A092321W', 'mandi'),
+(7, '2025-08-13', 1, 1, 4, 1, 'B1234XYZ', '');
 
 -- --------------------------------------------------------
 
@@ -360,13 +369,25 @@ CREATE TABLE `transaksi` (
   `id_customer` int(11) DEFAULT NULL,
   `id_jenis` int(11) DEFAULT NULL,
   `no_kendaraan` varchar(50) DEFAULT NULL,
-  `pemilik` varchar(100) DEFAULT NULL,
   `telepon` varchar(20) DEFAULT NULL,
   `id_mekanik` int(11) DEFAULT NULL,
-  `harga_jasa` int(11) DEFAULT 0,
-  `harga_sparepart` int(11) DEFAULT 0,
-  `total` int(11) DEFAULT 0
+  `harga_jasa` int(110) DEFAULT 0,
+  `harga_sparepart` int(110) DEFAULT 0,
+  `total` int(110) DEFAULT 0,
+  `status_pembayaran` varchar(255) DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `transaksi`
+--
+
+INSERT INTO `transaksi` (`id_transaksi`, `id_spk`, `id_customer`, `id_jenis`, `no_kendaraan`, `telepon`, `id_mekanik`, `harga_jasa`, `harga_sparepart`, `total`, `status_pembayaran`) VALUES
+(1, 1, 4, 1, 'B1234XYZ', '08123456789', 1, 75000, 0, 75000, 'lunas'),
+(2, 1, 6, 1, 'B1234XYZ', '08123456789', 1, 75000, 120000, 195000, 'lunas'),
+(3, 1, 4, 1, 'B1234XYZ', '082123231', 1, 75000, 120000, 195000, 'lunas'),
+(4, 1, 4, 1, 'B1234XYZ', '082123231', 1, 75000, 120000, 195000, ''),
+(5, 1, 4, 1, 'B1234XYZ', '082123231', 1, 75000, 120000, 195000, ''),
+(6, 5, 6, 2, 'B1231BB', '08123311100', 1, 125000, 120000, 245000, '');
 
 -- --------------------------------------------------------
 
@@ -395,7 +416,9 @@ INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `ro
 (4, 'Budi Santoso', 'budi@gmail.com', NULL, '$2a$10$UBVEpeRpWqJQbuligSaKpeT4wfx1IkJeNiKxkLsgI3wlQj1r/ShTa', 'mekanik', '', '2025-06-14 05:29:47.101', '2025-06-14 05:29:47.101'),
 (5, 'jamal', 'jamal@gmail.com', NULL, '$2a$10$5wx84alAUlgPnNqPyjoFQeGyaQjFz5cHjj4UfyUnI5yL2yvcruk5a', 'customer', '', '2025-06-16 08:29:26.342', '2025-06-16 08:29:26.342'),
 (7, 'jumint', 'jumin@gmail.com', NULL, '$2a$10$SLUkyL2ShAad2au8ltVkj.PGmA2p5dbPvWF0VYOKXUL51H0LibcIi', 'keuangan', '', '2025-06-17 03:58:47.103', '2025-06-17 03:58:47.103'),
-(8, 'Mas Ker', 'ker@gmail.com', NULL, '$2a$10$IQTQB8Gz6QwQKs0TNJW7ce/5evwDgHCe/KuL.gCd60FByLB7vGJBO', 'gudang', '', '2025-06-23 09:34:03.790', '2025-06-23 09:34:03.790');
+(8, 'Mas Kera', 'ker@gmail.com', NULL, '$2a$10$IQTQB8Gz6QwQKs0TNJW7ce/5evwDgHCe/KuL.gCd60FByLB7vGJBO', 'gudang', '', '2025-06-23 09:34:03.790', '2025-08-07 11:46:05.138'),
+(9, 'Kalas', 'kal@gmail.com', NULL, '$2a$10$9h6WMb8et2/Ax7tXUFKvIOvkmxE5cBbxROKPTRqyPKdF1mh9pVEQu', 'customer', '', '2025-08-11 03:00:28.480', '2025-08-12 10:14:19.036'),
+(10, 'jaas', 'jay2@gmail.com', NULL, '$2a$10$5VL1hhMi1Lh6Q3BzeI9xx.ic4RhwHf60P.hxhwBzYZVBvaHaGbLpe', 'customer', '', '2025-08-12 10:16:03.683', '2025-08-13 12:23:04.620');
 
 --
 -- Indexes for dumped tables
@@ -429,7 +452,8 @@ ALTER TABLE `detail_transaksi`
   ADD KEY `id_customer` (`id_customer`),
   ADD KEY `id_sparepart` (`id_sparepart`),
   ADD KEY `id_service` (`id_service`),
-  ADD KEY `id_jasa` (`id_jasa`);
+  ADD KEY `id_jasa` (`id_jasa`),
+  ADD KEY `fk_detail_transaksi_transaksi` (`id_transaksi`);
 
 --
 -- Indeks untuk tabel `failed_jobs`
@@ -546,7 +570,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT untuk tabel `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `id_customer` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_customer` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT untuk tabel `detail_transaksi`
@@ -606,19 +630,19 @@ ALTER TABLE `sparepart`
 -- AUTO_INCREMENT untuk tabel `spk`
 --
 ALTER TABLE `spk`
-  MODIFY `id_spk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_spk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT untuk tabel `transaksi`
 --
 ALTER TABLE `transaksi`
-  MODIFY `id_transaksi` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_transaksi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
@@ -638,7 +662,8 @@ ALTER TABLE `detail_transaksi`
   ADD CONSTRAINT `detail_transaksi_ibfk_2` FOREIGN KEY (`id_customer`) REFERENCES `customer` (`id_customer`),
   ADD CONSTRAINT `detail_transaksi_ibfk_3` FOREIGN KEY (`id_sparepart`) REFERENCES `sparepart` (`id_sparepart`),
   ADD CONSTRAINT `detail_transaksi_ibfk_4` FOREIGN KEY (`id_service`) REFERENCES `jenis_service` (`id_service`),
-  ADD CONSTRAINT `detail_transaksi_ibfk_5` FOREIGN KEY (`id_jasa`) REFERENCES `jenis_jasa` (`id_jasa`);
+  ADD CONSTRAINT `detail_transaksi_ibfk_5` FOREIGN KEY (`id_jasa`) REFERENCES `jenis_jasa` (`id_jasa`),
+  ADD CONSTRAINT `fk_detail_transaksi_transaksi` FOREIGN KEY (`id_transaksi`) REFERENCES `transaksi` (`id_transaksi`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Ketidakleluasaan untuk tabel `laporan`
