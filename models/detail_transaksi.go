@@ -6,9 +6,9 @@ type DetailTransaksi struct {
 	NoSPK       int    `gorm:"column:no_spk" json:"no_spk"`
 	IDCustomer  int    `gorm:"column:id_customer" json:"id_customer"`
 	NoKendaraan string `gorm:"column:no_kendaraan" json:"no_kendaraan"`
-	IDSparepart int    `gorm:"column:id_sparepart" json:"id_sparepart"`
-	IDService   int    `gorm:"column:id_service" json:"id_service"`
-	IDJasa      int    `gorm:"column:id_jasa" json:"id_jasa"`
+	IDSparepart *int   `gorm:"column:id_sparepart" json:"id_sparepart,omitempty"` // nullable
+	IDService   *int   `gorm:"column:id_service" json:"id_service,omitempty"`     // nullable
+	IDJasa      *int   `gorm:"column:id_jasa" json:"id_jasa,omitempty"`           // nullable
 	Total       int64  `gorm:"column:total" json:"total"`
 	Bayar       int64  `gorm:"column:bayar" json:"bayar"`
 	Kembalian   int64  `gorm:"column:kembalian" json:"kembalian"`
@@ -17,3 +17,4 @@ type DetailTransaksi struct {
 func (DetailTransaksi) TableName() string {
 	return "detail_transaksi"
 }
+
