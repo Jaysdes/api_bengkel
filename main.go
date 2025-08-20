@@ -29,12 +29,7 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	// Route root untuk health check
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{"message": "API is running"})
-	})
-
-	// Register semua route
+	// ✅ Semua route ada di routes.go
 	routes.SetupRoutes(r)
 
 	// Gunakan port dari Railway
