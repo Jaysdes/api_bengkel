@@ -12,11 +12,10 @@ import (
 var DB *gorm.DB
 
 func ConnectDB() {
-	// Ambil dari env Railway
-	host := os.Getenv("MYSQLHOST")
-	port := os.Getenv("MYSQLPORT")
 	user := os.Getenv("MYSQLUSER")
 	pass := os.Getenv("MYSQLPASSWORD")
+	host := os.Getenv("MYSQLHOST")
+	port := os.Getenv("MYSQLPORT")
 	dbname := os.Getenv("MYSQLDATABASE")
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
