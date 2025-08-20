@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -11,8 +12,19 @@ import (
 var DB *gorm.DB
 
 func ConnectDB() {
+	// Ambil config dari environment variables
+	dbUser := os.Getenv("DB_USER")
+	dbPass := os.Getenv("DB_PASS")
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+	dbName := os.Getenv("DB_NAME")
+
+	if dbPort == "" {
+		dbPort = "3306" // default port
+	}
+
 	// DSN format: username:password@tcp(host:port)/dbname?parseTime=True
-	dsn := "lesc6121:Ykx578uUzb2t25ingin@tcp(bangli.iixcp.rumahweb.net:3306)/lesc6121_bengkel?parseTime=True"
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=True", dbUser, dbPass, dbHost, dbPort, dbName)
 
 	database, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
