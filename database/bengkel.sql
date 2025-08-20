@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 14 Agu 2025 pada 02.47
+-- Waktu pembuatan: 20 Agu 2025 pada 07.49
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -26,7 +26,7 @@ SET time_zone = "+00:00";
 --
 -- Struktur dari tabel `cache`
 --
-
+DROP TABLE IF EXISTS `cache`;
 CREATE TABLE `cache` (
   `key` varchar(255) NOT NULL,
   `value` mediumtext NOT NULL,
@@ -70,7 +70,11 @@ INSERT INTO `customer` (`id_customer`, `nama_customer`, `id_jenis`, `no_kendaraa
 (6, 'Bamabang', 1, 'B1231BB', 'Jl.Makmur N0.12', '08123311100', NULL),
 (7, 'Sam Padn', 2, 'B2123X', 'Jln.Samarinda 21', '0832312313', '2025-08-07'),
 (8, 'Massa', 2, 'A092321W', 'Jln.Samarinda 21', '0832312313', '2025-08-07'),
-(9, 'Massa', 2, 'B2123X', 'Jln. Makmur 22', '0832312313', '2025-08-12');
+(9, 'Massa', 2, 'B2123X', 'Jln. Makmur 22', '0832312313', '2025-08-12'),
+(10, 'Sam Padn', 2, 'B1231BB', 'Jl. Merdeka No. 19', '0832312313', '2025-08-14'),
+(11, 'maimunah', 2, 'D21343S', 'Jln.Bogor Barat No.2 ', '082321312', '2025-08-15'),
+(12, 'Sariah', 1, 'C2210BA', 'Jln. Bogor Selatan NO.21', '082213455', '2025-08-15'),
+(13, 'maimunah', 1, 'B1234XYZ', 'Jln.Bogor Barat No.2 ', '08123456789', '2025-08-15');
 
 -- --------------------------------------------------------
 
@@ -91,6 +95,15 @@ CREATE TABLE `detail_transaksi` (
   `bayar` bigint(20) DEFAULT NULL,
   `kembalian` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `detail_transaksi`
+--
+
+INSERT INTO `detail_transaksi` (`id_detail`, `id_transaksi`, `no_spk`, `id_customer`, `no_kendaraan`, `id_sparepart`, `id_service`, `id_jasa`, `total`, `bayar`, `kembalian`) VALUES
+(16, 22, 1, 4, 'B1234XYZ', NULL, 2, 1, 75000, 0, 0),
+(17, 23, 14, 10, 'B1231BB', NULL, 1, 14, 25000, 0, 0),
+(18, 24, 1, 4, 'B1234XYZ', NULL, 2, 1, 675000, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -224,9 +237,19 @@ CREATE TABLE `laporan` (
   `id_transaksi` int(11) DEFAULT NULL,
   `id_customer` int(11) DEFAULT NULL,
   `total_biaya` bigint(20) DEFAULT NULL,
-  `tanggal_laporan` date DEFAULT curdate(),
+  `tanggal_laporan` date DEFAULT NULL,
   `catatan` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `laporan`
+--
+
+INSERT INTO `laporan` (`id_laporan`, `id_transaksi`, `id_customer`, `total_biaya`, `tanggal_laporan`, `catatan`) VALUES
+(1, 22, 4, 75000, '2025-08-14', 'Transaksi dibuat & diproses'),
+(2, 22, 4, 75000, '2025-08-14', 'Pembayaran divalidasi (lunas)'),
+(3, 23, 10, 25000, '2025-08-14', 'Transaksi dibuat & diproses'),
+(4, 24, 4, 675000, '2025-08-14', 'Transaksi dibuat & diproses');
 
 -- --------------------------------------------------------
 
@@ -247,7 +270,8 @@ CREATE TABLE `mekanik` (
 --
 
 INSERT INTO `mekanik` (`id_mekanik`, `nama_mekanik`, `jenis_kelamin`, `alamat`, `telepon`) VALUES
-(1, 'maman', 'L', 'jln.Bojong No.15', '0849124232');
+(1, 'maman', 'L', 'jln.Bojong No.15', '0849124232'),
+(2, 'Budiono', 'L', 'Jln.Bogor Barat No.2 ', '0821232313');
 
 -- --------------------------------------------------------
 
@@ -286,6 +310,21 @@ CREATE TABLE `proses` (
   `waktu_selesai` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data untuk tabel `proses`
+--
+
+INSERT INTO `proses` (`id_proses`, `id_transaksi`, `id_mekanik`, `status`, `keterangan`, `waktu_mulai`, `waktu_selesai`) VALUES
+(1, 7, 1, 'transaksi di proses', 'menunggu konfirmasi', '2025-08-14 03:45:12', NULL),
+(2, 8, 1, 'transaksi di proses', 'menunggu konfirmasi', '2025-08-14 03:56:43', NULL),
+(3, 9, 1, 'transaksi di proses', 'menunggu konfirmasi', '2025-08-14 04:20:10', NULL),
+(4, 10, 1, 'transaksi di proses', 'menunggu konfirmasi', '2025-08-14 04:20:35', NULL),
+(5, 11, 1, 'transaksi di proses', 'menunggu konfirmasi', '2025-08-14 04:21:48', NULL),
+(6, 12, 1, 'transaksi di proses', 'menunggu konfirmasi', '2025-08-14 04:30:46', NULL),
+(16, 22, 1, 'transaksi selesai', 'menunggu konfirmasi', '2025-08-14 06:13:08', '2025-08-14 06:17:25'),
+(17, 23, 1, 'transaksi di proses', 'menunggu konfirmasi', '2025-08-14 12:10:00', NULL),
+(18, 24, 1, 'transaksi di proses', 'menunggu konfirmasi', '2025-08-14 12:22:42', NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -306,7 +345,12 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('IPihCknric6fSFuf9xreaGe3LXDqzNMbVEdtO6vG', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjY6Il90b2tlbiI7czo0MDoicFo5OU5HSG5JbkdUWEV3ZTZkNU0zcEtaZmw1WmtMWlc3bTlTUTk1dSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9kYXNoYm9hcmQiO31zOjU6InRva2VuIjtzOjE0MToiZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmxlSEFpT2pFM05UVXhOelEyTXpjc0luSnZiR1VpT2lKaFpHMXBiaUlzSW5WelpYSmZhV1FpT2pKOS43T2wwUFpfaE01ZkFpTXNFRFhPb2wyakJGdXl1Vll2VGw4bWhaSFlveTNZIjtzOjQ6InVzZXIiO2E6NDp7czo1OiJlbWFpbCI7czoxMjoianlAZ21haWwuY29tIjtzOjI6ImlkIjtpOjI7czo0OiJuYW1lIjtzOjEzOiJKYXlhZGkgZGluYXRhIjtzOjQ6InJvbGUiO3M6NToiYWRtaW4iO319', 1755101344);
+('5Z4MjW0DUoCZWljlzUAJefTxlUatn2pchSPmsyKo', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoicUNMSEtNbXlPWnhFbTg5bmp2UlBjcXlVY2ZlYkxzRTJBck1OTThjZiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9kYXNoYm9hcmQiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjU6InRva2VuIjtzOjE0MToiZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmxlSEFpT2pFM05UVTJOalF3TkRRc0luSnZiR1VpT2lKaFpHMXBiaUlzSW5WelpYSmZhV1FpT2pKOS4tU3ZSdV9tWHAyNWZzeE9uQXdKRlNBUjR6cWc1V0R0ZVlwWVpKY2tjVGQ0IjtzOjQ6InVzZXIiO2E6NDp7czo1OiJlbWFpbCI7czoxMjoianlAZ21haWwuY29tIjtzOjI6ImlkIjtpOjI7czo0OiJuYW1lIjtzOjEzOiJKYXlhZGkgZGluYXRhIjtzOjQ6InJvbGUiO3M6NToiYWRtaW4iO319', 1755577858),
+('gHZLULr9Fc73O8Shv94rSkHw7yqaNJAT6akPAtoG', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjY6Il90b2tlbiI7czo0MDoiS0ZxNzFGOTBpWHozTFdaOVVMN1ZPdFlkaExPaGJkNUFGc2k0d2VjWiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mjk6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9tZWthbmlrIjt9czo1OiJ0b2tlbiI7czoxNDE6ImV5SmhiR2NpT2lKSVV6STFOaUlzSW5SNWNDSTZJa3BYVkNKOS5leUpsZUhBaU9qRTNOVFV6TXpJeU16Y3NJbkp2YkdVaU9pSmhaRzFwYmlJc0luVnpaWEpmYVdRaU9qSjkubTN6T2hUdkFYYmtFbHpKMzVvY0NQcmtoM09nOGNMRmsxSzlQN0lDMXZzOCI7czo0OiJ1c2VyIjthOjQ6e3M6NToiZW1haWwiO3M6MTI6Imp5QGdtYWlsLmNvbSI7czoyOiJpZCI7aToyO3M6NDoibmFtZSI7czoxMzoiSmF5YWRpIGRpbmF0YSI7czo0OiJyb2xlIjtzOjU6ImFkbWluIjt9fQ==', 1755246078),
+('m9CrTOyhLUbNOY24ON6GDg0KaqnF38X7KrmMoApZ', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiVEFlbkg5VU5MalJjbm8yaUhyNzMwSUpyRWlyVDBhQkkyY0J5dUlXYSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mjg6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9wcm9zZXMiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1755245793),
+('NfJckakkulpP9ifzrKXM4yHw2OTjbk1aM5ZbrIau', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoieGFISkVxZWZqcVRWMnJMc3ozRzdNYTRXc2NFYnZrOGFTanNrczdlSiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9kYXNoYm9hcmQiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjU6InRva2VuIjtzOjE0MToiZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmxlSEFpT2pFM05UVTJPREE1Tnpnc0luSnZiR1VpT2lKaFpHMXBiaUlzSW5WelpYSmZhV1FpT2pKOS5sN3ZpckctWlBIXzlEVWdHQTBKdXRoekE2bF9nWnduc2k3aVlhVnUtcnRjIjtzOjQ6InVzZXIiO2E6NDp7czo1OiJlbWFpbCI7czoxMjoianlAZ21haWwuY29tIjtzOjI6ImlkIjtpOjI7czo0OiJuYW1lIjtzOjEzOiJKYXlhZGkgZGluYXRhIjtzOjQ6InJvbGUiO3M6NToiYWRtaW4iO319', 1755599113),
+('nQg0bwh9CPuFWvztZot8Zu9iRyUaEWuGtKrC8rs3', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiejJyQk1CR1A0Szk1Ylo4MUwxVG5DUU1DWVp3NW1mbmFhcUdHS0JhSCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1755245792),
+('ZbLD99NV0rD3S0DZI2AQBIaXTROrrao71H0H8oCl', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiVzllRW11MUNXcFV1c0pOendEamo2a21ONkhrNENsbXl3aDRadDFkMCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mjg6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9wcm9zZXMiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1755245793);
 
 -- --------------------------------------------------------
 
@@ -327,7 +371,8 @@ CREATE TABLE `sparepart` (
 --
 
 INSERT INTO `sparepart` (`id_sparepart`, `nama_sparepart`, `harga_beli`, `harga_jual`, `stok`) VALUES
-(1, 'Ban Dalam', 100000, 120000, 20);
+(1, 'Ban Dalam', 100000, 120000, 10),
+(5, 'Oli Motor', 40000, 45000, 20);
 
 -- --------------------------------------------------------
 
@@ -355,7 +400,9 @@ INSERT INTO `spk` (`id_spk`, `tanggal_spk`, `id_service`, `id_jasa`, `id_custome
 (2, '2025-08-02', 1, 3, 6, 1, 'B1231BB', 'Telat ganti'),
 (5, '2025-08-07', 1, 2, 6, 1, 'B1231BB', 'DAsa'),
 (6, '2025-08-10', 1, 13, 8, 2, 'A092321W', 'mandi'),
-(7, '2025-08-13', 1, 1, 4, 1, 'B1234XYZ', '');
+(7, '2025-08-13', 1, 1, 4, 1, 'B1234XYZ', ''),
+(14, '2025-08-14', 1, 14, 10, 2, 'B1231BB', 'kotor'),
+(15, '2025-08-14', 2, 9, 6, 1, 'B1231BB', 'rem tidak pakem');
 
 -- --------------------------------------------------------
 
@@ -387,7 +434,16 @@ INSERT INTO `transaksi` (`id_transaksi`, `id_spk`, `id_customer`, `id_jenis`, `n
 (3, 1, 4, 1, 'B1234XYZ', '082123231', 1, 75000, 120000, 195000, 'lunas'),
 (4, 1, 4, 1, 'B1234XYZ', '082123231', 1, 75000, 120000, 195000, ''),
 (5, 1, 4, 1, 'B1234XYZ', '082123231', 1, 75000, 120000, 195000, ''),
-(6, 5, 6, 2, 'B1231BB', '08123311100', 1, 125000, 120000, 245000, '');
+(6, 5, 6, 2, 'B1231BB', '08123311100', 1, 125000, 120000, 245000, ''),
+(7, 1, 4, 1, 'B1234XYZ', '082123231', 1, 75000, 120000, 195000, ''),
+(8, 1, 4, 1, 'B1234XYZ', '082123231', 1, 75000, 0, 75000, ''),
+(9, 1, 4, 1, 'B1234XYZ', '082123231', 1, 75000, 120000, 195000, ''),
+(10, 1, 4, 1, 'B1234XYZ', '082123231', 1, 75000, 0, 75000, ''),
+(11, 1, 4, 1, 'B1234XYZ', '082123231', 1, 75000, 0, 75000, ''),
+(12, 1, 4, 1, 'B1234XYZ', '082123231', 1, 75000, 0, 75000, ''),
+(22, 1, 4, 1, 'B1234XYZ', '082123231', 1, 75000, 0, 75000, 'lunas'),
+(23, 14, 10, 2, 'B1231BB', '0832312313', 1, 25000, 0, 25000, ''),
+(24, 1, 4, 1, 'B1234XYZ', '082123231', 1, 75000, 600000, 675000, '');
 
 -- --------------------------------------------------------
 
@@ -413,12 +469,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `role`, `remember_token`, `created_at`, `updated_at`) VALUES
 (2, 'Jayadi dinata', 'jy@gmail.com', NULL, '$2a$10$jxkjQfgqf6Zta.nZ9B3VlubP.lLJW5aS5gwxCmAenL4u4i2WlclK.', 'admin', '', '2025-05-26 03:51:36.078', '2025-05-26 03:51:36.078'),
-(4, 'Budi Santoso', 'budi@gmail.com', NULL, '$2a$10$UBVEpeRpWqJQbuligSaKpeT4wfx1IkJeNiKxkLsgI3wlQj1r/ShTa', 'mekanik', '', '2025-06-14 05:29:47.101', '2025-06-14 05:29:47.101'),
-(5, 'jamal', 'jamal@gmail.com', NULL, '$2a$10$5wx84alAUlgPnNqPyjoFQeGyaQjFz5cHjj4UfyUnI5yL2yvcruk5a', 'customer', '', '2025-06-16 08:29:26.342', '2025-06-16 08:29:26.342'),
-(7, 'jumint', 'jumin@gmail.com', NULL, '$2a$10$SLUkyL2ShAad2au8ltVkj.PGmA2p5dbPvWF0VYOKXUL51H0LibcIi', 'keuangan', '', '2025-06-17 03:58:47.103', '2025-06-17 03:58:47.103'),
-(8, 'Mas Kera', 'ker@gmail.com', NULL, '$2a$10$IQTQB8Gz6QwQKs0TNJW7ce/5evwDgHCe/KuL.gCd60FByLB7vGJBO', 'gudang', '', '2025-06-23 09:34:03.790', '2025-08-07 11:46:05.138'),
-(9, 'Kalas', 'kal@gmail.com', NULL, '$2a$10$9h6WMb8et2/Ax7tXUFKvIOvkmxE5cBbxROKPTRqyPKdF1mh9pVEQu', 'customer', '', '2025-08-11 03:00:28.480', '2025-08-12 10:14:19.036'),
-(10, 'jaas', 'jay2@gmail.com', NULL, '$2a$10$5VL1hhMi1Lh6Q3BzeI9xx.ic4RhwHf60P.hxhwBzYZVBvaHaGbLpe', 'customer', '', '2025-08-12 10:16:03.683', '2025-08-13 12:23:04.620');
+(13, 'Resnu', 'rs@gmail.com', NULL, '$2a$10$HUzA1cXnnxFYqDY4D1ISB.3EcUqIb/ADnHpfaftPGBobeHkcxSu52', 'customer', '', '2025-08-15 00:12:50.744', '2025-08-15 00:12:50.744');
 
 --
 -- Indexes for dumped tables
@@ -570,13 +621,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT untuk tabel `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `id_customer` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_customer` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT untuk tabel `detail_transaksi`
 --
 ALTER TABLE `detail_transaksi`
-  MODIFY `id_detail` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_detail` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT untuk tabel `failed_jobs`
@@ -600,13 +651,13 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT untuk tabel `laporan`
 --
 ALTER TABLE `laporan`
-  MODIFY `id_laporan` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_laporan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT untuk tabel `mekanik`
 --
 ALTER TABLE `mekanik`
-  MODIFY `id_mekanik` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_mekanik` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT untuk tabel `migrations`
@@ -618,31 +669,31 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT untuk tabel `proses`
 --
 ALTER TABLE `proses`
-  MODIFY `id_proses` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_proses` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT untuk tabel `sparepart`
 --
 ALTER TABLE `sparepart`
-  MODIFY `id_sparepart` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_sparepart` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT untuk tabel `spk`
 --
 ALTER TABLE `spk`
-  MODIFY `id_spk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_spk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT untuk tabel `transaksi`
 --
 ALTER TABLE `transaksi`
-  MODIFY `id_transaksi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_transaksi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
