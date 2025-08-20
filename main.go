@@ -19,7 +19,7 @@ func main() {
 
 	// ✅ Middleware CORS
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"}, // biar gampang dulu, nanti bisa dibatasi domain
+		AllowOrigins:     []string{"http://localhost", "http://127.0.0.1:8000", "http://localhost:8000"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
