@@ -38,12 +38,10 @@ func CreateSPK(c *gin.Context) {
 		return
 	}
 
-	// set default tanggal
 	if input.TanggalSPK.IsZero() {
 		input.TanggalSPK = time.Now()
 	}
 
-	// set default status kalau kosong
 	if input.Status == "" {
 		input.Status = "di proses mekanik"
 	}
@@ -54,6 +52,7 @@ func CreateSPK(c *gin.Context) {
 	}
 	utils.ResponseSuccess(c, http.StatusCreated, "SPK created", input)
 }
+
 func UpdateSPK(c *gin.Context) {
 	id := c.Param("id")
 	var spk models.SPK
@@ -77,20 +76,18 @@ func UpdateSPK(c *gin.Context) {
 	spk.NoKendaraan = input.NoKendaraan
 	spk.Keluhan = input.Keluhan
 
-	// Update status
-	if input.Status != "" {
-		if input.Status == "selesai" {
-			spk.Status = "selesai di proses"
-		} else {
-			spk.Status = input.Status
-		}
+	// Status otomatis
+	if spk.Status == "di proses mekanik" {
+		spk.Status = "sudah di proses"
+	}
+	if input.Status == "selesai" {
+		spk.Status = "selesai di proses"
 	}
 
 	if err := config.DB.Save(&spk).Error; err != nil {
 		utils.ResponseError(c, http.StatusInternalServerError, "Failed to update SPK")
 		return
 	}
-
 	utils.ResponseSuccess(c, http.StatusOK, "SPK updated", spk)
 }
 
