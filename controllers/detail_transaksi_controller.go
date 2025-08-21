@@ -3,7 +3,6 @@ package controllers
 import (
 	"net/http"
 	"strconv"
-	"time"
 
 	"api_bengkel/config"
 	"api_bengkel/models"
@@ -131,70 +130,4 @@ func DeleteDetailTransaksi(c *gin.Context) {
 	}
 
 	utils.ResponseSuccess(c, http.StatusOK, "Deleted", nil)
-}
-func BayarDetailTransaksi(c *gin.Context) {
-	id := c.Param("id")
-	var detail models.DetailTransaksi
-	if err := config.DB.First(&detail, id).Error; err != nil {
-		utils.ResponseError(c, http.StatusNotFound, "Data tidak ditemukan")
-		return
-	}
-
-	var body struct {
-		Bayar int64 `json:"bayar"`
-	}
-	if err := c.ShouldBindJSON(&body); err != nil {
-		utils.ResponseError(c, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	detail.Bayar = body.Bayar
-	detail.Kembalian = detail.Bayar - detail.Total
-	if detail.Kembalian < 0 {
-		detail.Kembalian = 0
-	}
-
-	if detail.Bayar >= detail.Total {
-		detail.Status = "Lunas"
-
-		// 🔹 Update tabel proses terkait transaksi ini
-		var proses models.Proses
-		if err := config.DB.Where("id_transaksi = ?", detail.IDTransaksi).First(&proses).Error; err == nil {
-			now := time.Now()
-			proses.Status = "Selesai"
-			proses.Keterangan = "Transaksi selesai"
-			proses.WaktuSelesai = &now
-
-			if err := config.DB.Save(&proses).Error; err != nil {
-				utils.ResponseError(c, http.StatusInternalServerError, "Gagal update proses")
-				return
-			}
-		}
-	} else {
-		detail.Status = "Belum Lunas"
-	}
-
-	if err := config.DB.Save(&detail).Error; err != nil {
-		utils.ResponseError(c, http.StatusInternalServerError, "Gagal update data detail transaksi")
-		return
-	}
-
-	utils.ResponseSuccess(c, http.StatusOK, "Berhasil update pembayaran", detail)
-}
-
-func BatalDetailTransaksi(c *gin.Context) {
-	id := c.Param("id")
-	var detail models.DetailTransaksi
-	if err := config.DB.First(&detail, id).Error; err != nil {
-		utils.ResponseError(c, http.StatusNotFound, "Data tidak ditemukan")
-		return
-	}
-
-	detail.Status = "Dibatalkan"
-	if err := config.DB.Save(&detail).Error; err != nil {
-		utils.ResponseError(c, http.StatusInternalServerError, "Gagal membatalkan")
-		return
-	}
-
-	utils.ResponseSuccess(c, http.StatusOK, "Transaksi dibatalkan", detail)
 }

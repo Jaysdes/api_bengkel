@@ -50,7 +50,7 @@ func SetupRoutes(router *gin.Engine) {
 		api.DELETE("/transaksi/:id", controllers.DeleteTransaksi)
 		api.PUT("/transaksi/:id/bayar", controllers.BayarTransaksi)
 		api.GET("/transaksi/:id/nota", controllers.CetakNota)
-
+		api.PUT("/transaksi/:id/batal", controllers.BatalTransaksi)
 		//Jenis jasa
 		api.GET("/jenis_jasa", controllers.GetJenisJasas)
 		api.GET("/jenis_jasa/:id", controllers.GetJenisJasaByID)
@@ -87,8 +87,6 @@ func SetupRoutes(router *gin.Engine) {
 		api.POST("/detail_transaksi", controllers.CreateDetailTransaksi)
 		api.PUT("/detail_transaksi/:id", controllers.UpdateDetailTransaksi)
 		api.DELETE("/detail_transaksi/:id", controllers.DeleteDetailTransaksi)
-		api.PUT("/detail_transaksi/:id/bayar", controllers.BayarDetailTransaksi)
-		api.PUT("/detail_transaksi/:id/batal", controllers.BatalDetailTransaksi)
 
 		// Crud Users
 		api.GET("/users", controllers.GetUsers)

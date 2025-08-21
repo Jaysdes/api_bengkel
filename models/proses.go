@@ -5,6 +5,7 @@ import "time"
 type Proses struct {
 	IDProses     int        `json:"id_proses" gorm:"primaryKey;autoIncrement"`
 	IDTransaksi  int        `json:"id_transaksi"`
+	IDCustomer   int        `json:"id_customer"`
 	IDSPK        int        `json:"id_spk"`
 	IDMekanik    int        `json:"id_mekanik"`
 	Status       string     `json:"status" gorm:"type:varchar(50)"`

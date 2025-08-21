@@ -156,6 +156,7 @@ func CreateTransaksi(c *gin.Context) {
 		proses := models.Proses{
 			IDTransaksi: trx.IDTransaksi,
 			IDMekanik:   trx.IDMekanik,
+			IDCustomer:  trx.IDCustomer,
 			Status:      "transaksi di proses",
 			Keterangan:  "menunggu konfirmasi",
 			WaktuMulai:  time.Now(),
@@ -403,4 +404,21 @@ func CetakNota(c *gin.Context) {
 	}
 
 	utils.ResponseSuccess(c, http.StatusOK, "Success", detail)
+}
+
+func BatalTransaksi(c *gin.Context) {
+	id := c.Param("id")
+	var detail models.DetailTransaksi
+	if err := config.DB.First(&detail, id).Error; err != nil {
+		utils.ResponseError(c, http.StatusNotFound, "Data tidak ditemukan")
+		return
+	}
+
+	detail.Status = "Dibatalkan"
+	if err := config.DB.Save(&detail).Error; err != nil {
+		utils.ResponseError(c, http.StatusInternalServerError, "Gagal membatalkan")
+		return
+	}
+
+	utils.ResponseSuccess(c, http.StatusOK, "Transaksi dibatalkan", detail)
 }
