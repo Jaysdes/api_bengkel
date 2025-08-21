@@ -273,19 +273,17 @@ func BayarTransaksi(c *gin.Context) {
 
 	// 3) Transactional update
 	err := config.DB.Transaction(func(tx *gorm.DB) error {
-		// a) Update transaksi -> lunas
 		if err := tx.Model(&models.Transaksi{}).
 			Where("id_transaksi = ?", trx.IDTransaksi).
 			Update("status_pembayaran", "lunas").Error; err != nil {
 			return err
 		}
-
-		// b) Update detail_transaksi (set bayar & kembalian). Jika baris belum ada (edge-case), buat 1 baris minimal.
 		result := tx.Table("detail_transaksi").
 			Where("id_transaksi = ?", trx.IDTransaksi).
 			Updates(map[string]interface{}{
 				"bayar":     bayar,
 				"kembalian": kembalian,
+				"status":    "lunas",
 			})
 		if result.Error != nil {
 			return result.Error
@@ -310,7 +308,8 @@ func BayarTransaksi(c *gin.Context) {
 		if err := tx.Model(&models.Proses{}).
 			Where("id_transaksi = ?", trx.IDTransaksi).
 			Updates(map[string]interface{}{
-				"status":        "transaksi selesai",
+				"status":        "selesai",
+				"keterangan":    "transaksi selesai",
 				"waktu_selesai": time.Now(),
 			}).Error; err != nil {
 			return err
