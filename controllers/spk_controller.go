@@ -31,6 +31,7 @@ func GetSPKByID(c *gin.Context) {
 	utils.ResponseSuccess(c, http.StatusOK, "Success", spk)
 }
 
+// CreateSPK
 func CreateSPK(c *gin.Context) {
 	var input models.SPK
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -46,6 +47,9 @@ func CreateSPK(c *gin.Context) {
 		input.Status = "di proses mekanik"
 	}
 
+	// catatan default kosong
+	input.Catatan = ""
+
 	if err := config.DB.Create(&input).Error; err != nil {
 		utils.ResponseError(c, http.StatusInternalServerError, "Failed to create SPK")
 		return
@@ -53,6 +57,7 @@ func CreateSPK(c *gin.Context) {
 	utils.ResponseSuccess(c, http.StatusCreated, "SPK created", input)
 }
 
+// UpdateSPK
 func UpdateSPK(c *gin.Context) {
 	id := c.Param("id")
 	var spk models.SPK
@@ -67,7 +72,7 @@ func UpdateSPK(c *gin.Context) {
 		return
 	}
 
-	// Update data
+	// Update data umum
 	spk.TanggalSPK = input.TanggalSPK
 	spk.IDService = input.IDService
 	spk.IDJasa = input.IDJasa
@@ -75,6 +80,11 @@ func UpdateSPK(c *gin.Context) {
 	spk.IDJenis = input.IDJenis
 	spk.NoKendaraan = input.NoKendaraan
 	spk.Keluhan = input.Keluhan
+
+	// Catatan hanya bisa diisi lewat teknisi (dibuka di form teknisi.blade)
+	if input.Catatan != "" {
+		spk.Catatan = input.Catatan
+	}
 
 	// Status otomatis
 	if spk.Status == "di proses mekanik" {

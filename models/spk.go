@@ -12,6 +12,7 @@ type SPK struct {
 	NoKendaraan string    `gorm:"column:no_kendaraan" json:"no_kendaraan"`
 	Keluhan     string    `gorm:"column:keluhan" json:"keluhan"`
 	Status      string    `gorm:"column:status" json:"status"`
+	Catatan     string    `gorm:"column:catatan" json:"catatan"`
 }
 
 func (SPK) TableName() string {
