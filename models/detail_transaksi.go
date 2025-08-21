@@ -12,9 +12,9 @@ type DetailTransaksi struct {
 	Total       int64  `gorm:"column:total" json:"total"`
 	Bayar       int64  `gorm:"column:bayar" json:"bayar"`
 	Kembalian   int64  `gorm:"column:kembalian" json:"kembalian"`
+	Status      string `gorm:"column:status" json:"status"`
 }
 
 func (DetailTransaksi) TableName() string {
 	return "detail_transaksi"
 }
-

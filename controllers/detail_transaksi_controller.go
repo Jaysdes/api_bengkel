@@ -82,16 +82,9 @@ func UpdateDetailTransaksi(c *gin.Context) {
 		return
 	}
 
-	// Update field
+	// Update field dasar
 	detail.IDTransaksi = input.IDTransaksi
-	detail.NoSPK = input.NoSPK
-	detail.IDCustomer = input.IDCustomer
-	detail.NoKendaraan = input.NoKendaraan
-	detail.IDSparepart = input.IDSparepart
-	detail.IDService = input.IDService
-	detail.IDJasa = input.IDJasa
 	detail.Total = int64(transaksi.Total)
-
 	detail.Bayar = input.Bayar
 
 	// Hitung kembalian
@@ -99,6 +92,19 @@ func UpdateDetailTransaksi(c *gin.Context) {
 		detail.Kembalian = detail.Bayar - detail.Total
 		if detail.Kembalian < 0 {
 			detail.Kembalian = 0
+		}
+	}
+
+	// Logika status
+	if input.Status != "" {
+		// kalau dikirim langsung, pakai input
+		detail.Status = input.Status
+	} else {
+		// kalau otomatis
+		if detail.Bayar >= detail.Total {
+			detail.Status = "Lunas"
+		} else {
+			detail.Status = "Belum Lunas"
 		}
 	}
 
@@ -124,4 +130,56 @@ func DeleteDetailTransaksi(c *gin.Context) {
 	}
 
 	utils.ResponseSuccess(c, http.StatusOK, "Deleted", nil)
+}
+func BayarDetailTransaksi(c *gin.Context) {
+	id := c.Param("id")
+	var detail models.DetailTransaksi
+	if err := config.DB.First(&detail, id).Error; err != nil {
+		utils.ResponseError(c, http.StatusNotFound, "Data tidak ditemukan")
+		return
+	}
+
+	var body struct {
+		Bayar int64 `json:"bayar"`
+	}
+	if err := c.ShouldBindJSON(&body); err != nil {
+		utils.ResponseError(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	detail.Bayar = body.Bayar
+	detail.Kembalian = detail.Bayar - detail.Total
+	if detail.Kembalian < 0 {
+		detail.Kembalian = 0
+	}
+
+	if detail.Bayar >= detail.Total {
+		detail.Status = "Lunas"
+	} else {
+		detail.Status = "Belum Lunas"
+	}
+
+	if err := config.DB.Save(&detail).Error; err != nil {
+		utils.ResponseError(c, http.StatusInternalServerError, "Gagal update data")
+		return
+	}
+
+	utils.ResponseSuccess(c, http.StatusOK, " berhasil", detail)
+}
+
+func BatalDetailTransaksi(c *gin.Context) {
+	id := c.Param("id")
+	var detail models.DetailTransaksi
+	if err := config.DB.First(&detail, id).Error; err != nil {
+		utils.ResponseError(c, http.StatusNotFound, "Data tidak ditemukan")
+		return
+	}
+
+	detail.Status = "Dibatalkan"
+	if err := config.DB.Save(&detail).Error; err != nil {
+		utils.ResponseError(c, http.StatusInternalServerError, "Gagal membatalkan")
+		return
+	}
+
+	utils.ResponseSuccess(c, http.StatusOK, "Transaksi dibatalkan", detail)
 }

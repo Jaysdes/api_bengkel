@@ -87,6 +87,8 @@ func SetupRoutes(router *gin.Engine) {
 		api.POST("/detail_transaksi", controllers.CreateDetailTransaksi)
 		api.PUT("/detail_transaksi/:id", controllers.UpdateDetailTransaksi)
 		api.DELETE("/detail_transaksi/:id", controllers.DeleteDetailTransaksi)
+		api.PUT("/detail_transaksi/:id/bayar", controllers.BayarDetailTransaksi)
+		api.PUT("/detail_transaksi/:id/batal", controllers.BatalDetailTransaksi)
 
 		// Crud Users
 		api.GET("/users", controllers.GetUsers)
