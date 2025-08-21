@@ -88,7 +88,7 @@ func UpdateSPK(c *gin.Context) {
 
 	// Status otomatis
 	if spk.Status == "di proses mekanik" {
-		spk.Status = "sudah di proses"
+		spk.Status = "sedang di proses"
 	}
 	if input.Status == "selesai" {
 		spk.Status = "selesai di proses"
