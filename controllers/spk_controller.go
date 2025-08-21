@@ -81,7 +81,7 @@ func UpdateSPK(c *gin.Context) {
 	spk.NoKendaraan = input.NoKendaraan
 	spk.Keluhan = input.Keluhan
 
-	// Catatan hanya bisa diisi lewat teknisi (dibuka di form teknisi.blade)
+	// Catatan hanya bisa diisi lewat teknisi
 	if input.Catatan != "" {
 		spk.Catatan = input.Catatan
 	}
@@ -94,10 +94,20 @@ func UpdateSPK(c *gin.Context) {
 		spk.Status = "selesai di proses"
 	}
 
+	// Simpan perubahan SPK
 	if err := config.DB.Save(&spk).Error; err != nil {
 		utils.ResponseError(c, http.StatusInternalServerError, "Failed to update SPK")
 		return
 	}
+
+	// Update tabel proses -> isi otomatis "sudah di proses mekanik"
+	if err := config.DB.Model(&models.Proses{}).
+		Where("id_spk = ?", spk.IDSpk).
+		Update("keterangan", "sudah di proses mekanik").Error; err != nil {
+		utils.ResponseError(c, http.StatusInternalServerError, "Failed to update Proses")
+		return
+	}
+
 	utils.ResponseSuccess(c, http.StatusOK, "SPK updated", spk)
 }
 
