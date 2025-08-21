@@ -180,6 +180,7 @@ func CreateTransaksi(c *gin.Context) {
 			"total":        int64(trx.Total),
 			"bayar":        0,
 			"kembalian":    0,
+			"status":       "Belum Lunas",
 		}
 		if resolvedService > 0 {
 			detailMap["id_service"] = resolvedService
