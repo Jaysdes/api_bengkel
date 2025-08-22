@@ -3,6 +3,7 @@ package controllers
 import (
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"api_bengkel/config"
@@ -64,8 +65,8 @@ func Register(c *gin.Context) {
 }
 
 type LoginInput struct {
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required"`
+	Identifier string `json:"identifier" binding:"required"` // bisa email atau username
+	Password   string `json:"password" binding:"required"`
 }
 
 func Login(c *gin.Context) {
@@ -77,20 +78,33 @@ func Login(c *gin.Context) {
 	}
 
 	var user models.User
-	if err := config.DB.Where("email = ?", input.Email).First(&user).Error; err != nil {
-		log.Println("Login failed, user not found:", input.Email)
-		utils.ResponseError(c, http.StatusUnauthorized, "Email atau password salah")
-		return
+
+	// cek apakah identifier berupa email atau username
+	if strings.Contains(input.Identifier, "@") {
+		// login pakai email
+		if err := config.DB.Where("email = ?", input.Identifier).First(&user).Error; err != nil {
+			log.Println("Login failed, email not found:", input.Identifier)
+			utils.ResponseError(c, http.StatusUnauthorized, "Email atau password salah")
+			return
+		}
+	} else {
+		// login pakai username
+		if err := config.DB.Where("name = ?", input.Identifier).First(&user).Error; err != nil {
+			log.Println("Login failed, username not found:", input.Identifier)
+			utils.ResponseError(c, http.StatusUnauthorized, "Username atau password salah")
+			return
+		}
 	}
 
+	// cek password
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password)); err != nil {
-		log.Println("Login failed, wrong password for email:", input.Email)
-		utils.ResponseError(c, http.StatusUnauthorized, "Email atau password salah")
+		log.Println("Login failed, wrong password for:", input.Identifier)
+		utils.ResponseError(c, http.StatusUnauthorized, "Email/Username atau password salah")
 		return
 	}
 
-	secretKey := []byte("your-secret-key") // simpan di config/env lebih aman
-
+	// generate token JWT
+	secretKey := []byte("your-secret-key") // simpan di env
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id": user.ID,
 		"role":    user.Role,
