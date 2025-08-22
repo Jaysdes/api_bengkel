@@ -72,7 +72,7 @@ func toString(v interface{}) string {
 	}
 }
 
-// POST /api/transaksi
+// CreateTransaksi membuat transaksi baru + proses + detail + laporan
 func CreateTransaksi(c *gin.Context) {
 	var raw map[string]interface{}
 	if err := c.ShouldBindJSON(&raw); err != nil {
@@ -80,13 +80,14 @@ func CreateTransaksi(c *gin.Context) {
 		return
 	}
 
+	// Ambil id_spk
 	idSPK, okSPK := toInt(raw["id_spk"])
 	if !okSPK || idSPK <= 0 {
 		utils.ResponseError(c, http.StatusBadRequest, "id_spk wajib diisi dan harus valid")
 		return
 	}
 
-	// Ambil SPK untuk fallback
+	// Ambil data SPK untuk fallback
 	var spk struct {
 		IDSPK       int    `gorm:"column:id_spk"`
 		IDService   int    `gorm:"column:id_service"`
@@ -100,6 +101,7 @@ func CreateTransaksi(c *gin.Context) {
 		Where("id_spk = ?", idSPK).
 		Scan(&spk).Error
 
+	// Ambil id_customer
 	idCustomer, okCust := toInt(raw["id_customer"])
 	if (!okCust || idCustomer <= 0) && spk.IDCustomer > 0 {
 		idCustomer = spk.IDCustomer
@@ -110,28 +112,33 @@ func CreateTransaksi(c *gin.Context) {
 		return
 	}
 
+	// Ambil id_mekanik
 	idMekanik, okMek := toInt(raw["id_mekanik"])
 	if !okMek || idMekanik <= 0 {
 		utils.ResponseError(c, http.StatusBadRequest, "id_mekanik wajib diisi")
 		return
 	}
 
+	// Ambil no_kendaraan
 	noKendaraan := toString(raw["no_kendaraan"])
 	if noKendaraan == "" && spk.NoKendaraan != "" {
 		noKendaraan = spk.NoKendaraan
 	}
 
+	// Ambil id_jenis
 	idJenis, _ := toInt(raw["id_jenis"])
 	if idJenis <= 0 && spk.IDJenis > 0 {
 		idJenis = spk.IDJenis
 	}
 	setIDJenis := idJenis > 0
 
+	// Field tambahan
 	hargaJasa, _ := toInt(raw["harga_jasa"])
 	hargaSpare, _ := toInt(raw["harga_sparepart"])
 	jenisService, _ := toInt(raw["jenis_service"])
 	telepon := toString(raw["telepon"])
 
+	// Buat transaksi utama
 	trx := models.Transaksi{
 		IDSPK:          idSPK,
 		IDCustomer:     idCustomer,
@@ -146,6 +153,7 @@ func CreateTransaksi(c *gin.Context) {
 		trx.IDJenis = idJenis
 	}
 
+	// Mulai transaksi DB
 	err := config.DB.Transaction(func(tx *gorm.DB) error {
 		// 1) Transaksi
 		if err := tx.Create(&trx).Error; err != nil {
@@ -157,6 +165,7 @@ func CreateTransaksi(c *gin.Context) {
 			IDTransaksi: trx.IDTransaksi,
 			IDMekanik:   trx.IDMekanik,
 			IDCustomer:  trx.IDCustomer,
+			IDSPK:       trx.IDSPK,
 			Status:      "transaksi di proses",
 			Keterangan:  "menunggu konfirmasi",
 			WaktuMulai:  time.Now(),
@@ -165,7 +174,7 @@ func CreateTransaksi(c *gin.Context) {
 			return fmt.Errorf("gagal membuat proses: %w", err)
 		}
 
-		// 3) Detail Transaksi (id_sparepart dibiarkan NULL)
+		// 3) Detail Transaksi
 		resolvedService := 0
 		if jenisService > 0 {
 			resolvedService = jenisService
@@ -189,11 +198,12 @@ func CreateTransaksi(c *gin.Context) {
 		if spk.IDJasa > 0 {
 			detailMap["id_jasa"] = spk.IDJasa
 		}
+
 		if err := tx.Table("detail_transaksi").Create(detailMap).Error; err != nil {
 			return fmt.Errorf("gagal membuat detail_transaksi: %w", err)
 		}
 
-		// 4) LAPORAN sesuai tabel di DB (BUKAN id_proses)
+		// 4) Laporan
 		lap := models.Laporan{
 			IDTransaksi:    trx.IDTransaksi,
 			IDCustomer:     trx.IDCustomer,
@@ -213,6 +223,7 @@ func CreateTransaksi(c *gin.Context) {
 		return
 	}
 
+	// Success response
 	utils.ResponseSuccess(c, http.StatusOK, "Transaksi, Proses, Detail & Laporan berhasil dibuat", trx)
 }
 
